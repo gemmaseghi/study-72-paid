@@ -127,20 +127,20 @@ export default {
     /*
      * Redundancy experiment
      */
-    /*
+    
     GeneralInstructions,
     RedundancyInstructions,
     RedundancyGridTrial,
     EndFirstExperiment,
-     */
+    
     /*
      * wcst task
      */
-    /*
+    
     WcstInstructions,
     WcstGridTrial,
     EndSecondExperiment,
-     */
+    
     /*
      * Director task
      */
