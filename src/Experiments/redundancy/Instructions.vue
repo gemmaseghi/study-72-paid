@@ -47,7 +47,7 @@ export default {
             </p>
 
             <p>
-              Deine Aufgabe ist es, Objekte so zu beschreiben, dass ein anderer Teilnehmender sie korrekt identifizieren kann. Du kannst den Namen des Objekts verwenden.
+              Deine Aufgabe ist es, Objekte so zu beschreiben, dass ein anderer Teilnehmender sie korrekt identifizieren kann. 
             </p>
 
             <p>Hier ist ein Beispiel:</p>
@@ -91,7 +91,7 @@ export default {
             </p>
 
             <p>
-              Du <strong>musst nicht beschreiben, wo im Bildausschnitt sich der Aufkleber befindet</strong>. Gib einfach eine Beschreibung an, die das richtige Objekt aus den vier Objekten im Gitter deutlich macht.
+              Du <strong>musst nicht beschreiben, wo im Bildausschnitt sich der Aufkleber befindet</strong>. Gib einfach eine Beschreibung an, die das richtige Objekt aus den vier Objekten im Gitter deutlich macht. Du kannst den Namen des Objekts verwenden.
             </p>
 
             <p>

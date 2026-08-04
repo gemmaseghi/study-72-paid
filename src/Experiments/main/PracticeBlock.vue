@@ -68,13 +68,16 @@
               class="cell bottom-right"
               @click="selectObject('bottomRight')"
             />
-
-            <div
-              v-if="responses[currentGrid]"
-              class="selection-marker"
-              :class="responses[currentGrid].response"
-            />
           </div>
+
+          <p
+            v-if="feedbackMessage"
+            class="practice-feedback"
+            role="alert"
+            aria-live="assertive"
+          >
+            {{ feedbackMessage }}
+          </p>
         </div>
       </div>
 
@@ -104,6 +107,9 @@ export default {
       blockStartTime: null,
       gridStartTime: null,
       responses: [],
+      attemptCounts: [],
+      feedbackMessage: "",
+      feedbackTimer: null,
       advanceDelay: 250,
       imagesReady: false
     };
@@ -112,6 +118,8 @@ export default {
     startPractice() {
       this.currentGrid = 0;
       this.responses = [];
+      this.attemptCounts = [];
+      this.feedbackMessage = "";
       this.imagesReady = false;
       this.step = "trial";
 
@@ -125,6 +133,12 @@ export default {
           });
         });
       });
+    },
+
+    beforeDestroy() {
+      if (this.feedbackTimer) {
+        window.clearTimeout(this.feedbackTimer);
+      }
     },
 
     preloadPracticeImages() {
@@ -147,7 +161,8 @@ export default {
 
     selectObject(cell) {
       const now = performance.now();
-      const trial = this.practiceTrials[this.currentGrid];
+      const trialIndex = this.currentGrid;
+      const trial = this.practiceTrials[trialIndex];
 
       const correctAnswers = Array.isArray(trial.correctAnswer)
         ? trial.correctAnswer
@@ -155,7 +170,42 @@ export default {
 
       const isCorrect = correctAnswers.includes(cell);
 
-      this.$set(this.responses, this.currentGrid, {
+      const newAttemptCount =
+        (this.attemptCounts[trialIndex] || 0) + 1;
+
+      this.$set(
+        this.attemptCounts,
+        trialIndex,
+        newAttemptCount
+      );
+
+      if (!isCorrect) {
+        // Cancel a previous timer if the participant clicks incorrectly again
+        // before the message has disappeared.
+        if (this.feedbackTimer) {
+          window.clearTimeout(this.feedbackTimer);
+        }
+
+        this.feedbackMessage =
+          "Falsch. Bitte versuche es noch einmal.";
+
+        // Hide the message after 1.5 seconds.
+        this.feedbackTimer = window.setTimeout(() => {
+          this.feedbackMessage = "";
+          this.feedbackTimer = null;
+        }, 800);
+
+        return;
+      }
+
+      if (this.feedbackTimer) {
+        window.clearTimeout(this.feedbackTimer);
+        this.feedbackTimer = null;
+      }
+
+      this.feedbackMessage = "";
+
+      this.$set(this.responses, trialIndex, {
         trial_type: "practice_object_trial",
         trial_id: trial.id,
         phase: trial.phase,
@@ -166,11 +216,13 @@ export default {
         grey_cell: trial.greyCell,
         response: cell,
         correct_answer: correctAnswers.join(","),
-        correct: isCorrect,
+        correct: true,
+        attempts: newAttemptCount,
+        incorrect_attempts: newAttemptCount - 1,
         rt: now - this.gridStartTime
       });
 
-      if (this.currentGrid < this.practiceTrials.length - 1) {
+      if (trialIndex < this.practiceTrials.length - 1) {
         this.currentGrid += 1;
 
         this.$nextTick(() => {
@@ -181,7 +233,7 @@ export default {
       } else {
         this.currentGrid += 1;
 
-        setTimeout(() => {
+        window.setTimeout(() => {
           this.finishPractice(now);
         }, this.advanceDelay);
       }
@@ -209,6 +261,8 @@ export default {
         trialData[`practice_correct_answer_${n}`] = r.correct_answer;
         trialData[`practice_correct_${n}`] = r.correct;
         trialData[`practice_rt_${n}`] = r.rt;
+        trialData[`practice_attempts_${n}`] = r.attempts;
+        trialData[`practice_incorrect_attempts_${n}`] = r.incorrect_attempts;
       });
 
       this.$magpie.addTrialData(trialData);
@@ -225,6 +279,16 @@ export default {
   text-align: justify;
   font-size: 18px;
   line-height: 1.6;
+}
+
+.practice-feedback {
+  min-height: 30px;
+  margin: 14px 0 0;
+  color: #fb0808;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .practice-instructions h2 {
@@ -284,7 +348,7 @@ export default {
 }
 
 .active-area {
-  height: 520px;          
+  min-height: 560px;
   display: flex;
   flex-direction: column;
   align-items: center;
