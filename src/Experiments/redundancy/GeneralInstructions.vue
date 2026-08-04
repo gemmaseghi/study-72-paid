@@ -65,7 +65,7 @@ export default {
             </p>
 
             <p>
-              3. Vergütung: Für deine Teilnahme erhälst du 0.5 Versuchspersonenstunden.           
+              3. Vergütung: Für deine Teilnahme erhälst du einen 10-Euro-Amazon-Gutschein          
             </p>
 
             <p>
@@ -116,7 +116,7 @@ export default {
   },
 
   methods: {
-    
+
     previousPage() {
       this.page--;
     },

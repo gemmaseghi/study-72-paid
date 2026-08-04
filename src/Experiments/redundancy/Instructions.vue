@@ -47,7 +47,7 @@ export default {
             </p>
 
             <p>
-              Deine Aufgabe ist es, Objekte so zu beschreiben, dass ein anderer Teilnehmender sie korrekt identifizieren kann. 
+              Deine Aufgabe ist es, Objekte so zu beschreiben, dass ein anderer Teilnehmender sie korrekt identifizieren kann. Du kannst den Namen des Objekts verwenden.
             </p>
 
             <p>Hier ist ein Beispiel:</p>
