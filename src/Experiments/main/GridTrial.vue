@@ -45,7 +45,7 @@
 
       <div v-if="currentGrid >= block.length" class="active-area">
         <div class="next-square" @click="finishBlock()">
-          <span>Next</span>
+          <span>Weiter</span>
         </div>
       </div>
     </div>
