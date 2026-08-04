@@ -127,23 +127,24 @@ export default {
     /*
      * Redundancy experiment
      */
-    
+    /*
     GeneralInstructions,
     RedundancyInstructions,
     RedundancyGridTrial,
     EndFirstExperiment,
-    
+     */
     /*
      * wcst task
      */
-    
+    /*
     WcstInstructions,
     WcstGridTrial,
     EndSecondExperiment,
-    
+     */
     /*
      * Director task
      */
+    /*
     InstructionsSpeaker,
     PracticeSpeaker,
     InstructionsListener,
@@ -153,14 +154,15 @@ export default {
     PracticeBlock,
     Questionnaire,
     EndThirdExperiment,
-    
+     */
     /*
      * Stroop task
      */
+    /*
     StroopInstructions,
     StroopGridTrial,
     EndFourthExperiment,
-    
+     */
     /*
      * Short Story task
      */

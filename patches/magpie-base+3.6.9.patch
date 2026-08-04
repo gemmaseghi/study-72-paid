@@ -48,24 +48,22 @@ index 08686a3..f5de476 100644
    },
  
 diff --git a/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue b/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue
-index 23425df..4c94254 100644
+index 23425df..791f61b 100644
 --- a/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue
 +++ b/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue
-@@ -3,30 +3,63 @@ Use this screen at the end of your experiment to submit the data to the server.
- You can provide the submission URL to the Experiment component.
+@@ -4,29 +4,67 @@ You can provide the submission URL to the Experiment component.
  </docs>
  
-+<docs>
-+Use this screen at the end of your experiment to submit the data to the server.
-+You can provide the submission URL to the Experiment component.
-+</docs>
-+
  <template>
-   <Screen v-if="!$magpie.debug" title="Submitting">
+-  <Screen v-if="!$magpie.debug" title="Submitting">
++  <Screen v-if="!$magpie.debug" title="Datenübertragung">
      <Slide>
-       <p>{{ $t('screens.SubmitResultsScreen.waiting') }}</p>
+-      <p>{{ $t('screens.SubmitResultsScreen.waiting') }}</p>
 -      <Wait :time="0" @done="submit(() => $magpie.nextSlide())" />
-+      <Wait :time="0" @done="submit()" />
++      <div class="submission-content">
++        <p>{{ $t('screens.SubmitResultsScreen.waiting') }}</p>
++        <Wait :time="0" @done="submit()" />
++      </div>
      </Slide>
 +
      <Slide>
@@ -73,48 +71,59 @@ index 23425df..4c94254 100644
 -        {{ $t('screens.SubmitResultsScreen.done') }}
 -        <Wait :time="3000" @done="redirectToCompletionUrl" />
 -      </p>
-+      <div v-if="!error">
+-      <div v-else>
+-        <p>{{ $t('screens.SubmitResultsScreen.error') }}</p>
++      <div v-if="!error" class="submission-content">
++        <h2>Vielen Dank für deine Teilnahme!</h2>
++
 +        <p>
-+          Your responses have been submitted successfully.
++          Deine Antworten wurden erfolgreich übermittelt.
 +        </p>
 +
 +        <p>
-+          Your completion code is:
++          Dein persönlicher Abschlusscode lautet:
++        </p>
++
++        <p class="completion-code">
++          {{ completionCode }}
 +        </p>
 +
 +        <p>
-+          <strong>{{ completionCode }}</strong>
-+        </p>
-+
-+        <p>
-+          To receive your compensation, please email
++          Um deine Aufwandsentschädigung zu erhalten, schreibe bitte eine
++          E-Mail an
 +          <a :href="emailLink">
 +            {{ researcherEmail }}
 +          </a>
-+          and include this completion code in your message.
++          und gib deinen Abschlusscode in der Nachricht an.
 +        </p>
-+
-+        <p>
-+          You will then receive a participation certificate by email.
-+          Please complete and sign the certificate and return it by email.
-+          Once the signed certificate has been received, your gift card
-+          will be sent to you.
-+        </p>
-+      </div>
-+
-       <div v-else>
-         <p>{{ $t('screens.SubmitResultsScreen.error') }}</p>
 +
          <p>
-           {{ $t('screens.SubmitResultsScreen.contact') }}
+-          {{ $t('screens.SubmitResultsScreen.contact') }}
 -          <a :href="'mailto:' + $magpie.contactEmail">{{
 -            $magpie.contactEmail
 -          }}</a
 -          >.
++          Anschließend erhältst du per E-Mail eine Teilnahmebescheinigung.
++          Bitte fülle diese aus, unterschreibe sie und sende sie per E-Mail
++          zurück. Sobald die unterschriebene Teilnahmebescheinigung bei uns
++          eingegangen ist, wird dir dein Gutschein zugesendet.
+         </p>
++      </div>
++
++      <div v-else class="submission-content error-content">
++        <h2>Fehler bei der Datenübertragung</h2>
++
++        <p>
++          Deine Antworten konnten leider nicht erfolgreich übermittelt
++          werden.
++        </p>
++
++        <p>
++          Bitte wende dich an
 +          <a :href="'mailto:' + $magpie.contactEmail">
 +            {{ $magpie.contactEmail }}
 +          </a>.
-         </p>
++        </p>
 +
          <p v-text="error" />
        </div>
@@ -124,7 +133,7 @@ index 23425df..4c94254 100644
    <DebugResultsScreen v-else />
  </template>
  
-@@ -35,28 +68,129 @@ import Screen from '../Screen';
+@@ -35,30 +73,175 @@ import Screen from '../Screen';
  import Wait from '../helpers/Wait';
  import DebugResultsScreen from './DebugResultsScreen';
  import Slide from '../Slide';
@@ -153,14 +162,15 @@ index 23425df..4c94254 100644
 +  computed: {
 +    emailLink() {
 +      const subject = encodeURIComponent(
-+        'Study completion and compensation'
++        'Abschluss der Studie und Aufwandsentschädigung'
 +      );
 +
 +      const body = encodeURIComponent(
-+        `Hello,\n\n` +
-+          `I have completed the experiment.\n\n` +
-+          `My completion code is: ${this.completionCode}\n\n` +
-+          `Please send me the participation certificate.\n`
++        `Hallo,\n\n` +
++          `ich habe das Experiment abgeschlossen.\n\n` +
++          `Mein Abschlusscode lautet: ${this.completionCode}\n\n` +
++          `Bitte senden Sie mir die Teilnahmebescheinigung zu.\n\n` +
++          `Viele Grüße`
 +      );
 +
 +      return (
@@ -185,7 +195,6 @@ index 23425df..4c94254 100644
 +    getOrCreateCompletionCode() {
 +      const storageKey = 'study-72-paid-completion-code';
 +
-+      // Reuse the code if this component is recreated in the same tab.
 +      const existingCode =
 +        window.sessionStorage.getItem(storageKey);
 +
@@ -209,7 +218,6 @@ index 23425df..4c94254 100644
 +          .join('')
 +          .toUpperCase();
 +      } else {
-+        // Fallback for browsers without Web Crypto support.
 +        randomPart = (
 +          Date.now().toString(36) +
 +          Math.random().toString(36).slice(2)
@@ -227,15 +235,10 @@ index 23425df..4c94254 100644
 +
 +    async submit() {
        try {
-+        // The completion code has already been added to the
-+        // experiment-level data.
          await this.$magpie.submit();
 -        cb();
 +
-+        // The data were saved, so the participant may now leave.
 +        this.disableUnloadWarning();
-+
-+        // Show the completion code and payment instructions.
 +        this.$magpie.nextSlide();
        } catch (err) {
 -        this.error = err.message;
@@ -245,7 +248,6 @@ index 23425df..4c94254 100644
 +            ? err.message
 +            : String(err);
 +
-+        // Display the submission error without showing payment details.
 +        this.$magpie.nextSlide();
        }
      },
@@ -264,3 +266,57 @@ index 23425df..4c94254 100644
        }
      }
    }
+ };
+ </script>
++
++<style scoped>
++.submission-content {
++  box-sizing: border-box;
++  width: 100%;
++  max-width: 650px;
++  margin: 40px auto;
++  padding: 0 30px;
++  font-size: 18px;
++  line-height: 1.6;
++  text-align: left;
++}
++
++.submission-content h2 {
++  margin-bottom: 28px;
++  text-align: center;
++}
++
++.submission-content p {
++  margin: 0 0 18px;
++}
++
++.completion-code {
++  width: fit-content;
++  margin: 24px auto !important;
++  padding: 12px 20px;
++  border: 1px solid #ababab;
++  border-radius: 4px;
++  font-family: monospace;
++  font-size: 22px;
++  font-weight: bold;
++  letter-spacing: 1px;
++  text-align: center;
++  overflow-wrap: anywhere;
++}
++
++.error-content {
++  text-align: left;
++}
++
++@media (max-width: 700px) {
++  .submission-content {
++    margin: 25px auto;
++    padding: 0 16px;
++  }
++
++  .completion-code {
++    font-size: 18px;
++  }
++}
++</style>
+\ No newline at end of file
