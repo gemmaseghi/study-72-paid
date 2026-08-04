@@ -30,6 +30,14 @@
     <!-- Experiment 3: Director task            -->
     <!-- ====================================== -->
 
+    <InstructionsSpeaker />
+
+    <PracticeSpeaker />
+
+    <InstructionsListener />
+
+    <PracticeListener />
+
     <InstructionsWithBack />
 
     <PracticeBlock :practiceTrials="practiceTrials" />
@@ -81,12 +89,16 @@ import GeneralInstructions from "./Experiments/redundancy/GeneralInstructions.vu
 import WcstInstructions from "./Experiments/wcst/Instructions.vue";
 import WcstGridTrial from "./Experiments/wcst/GridTrial.vue";
 import EndSecondExperiment from "./Experiments/wcst/EndSecondExperiment.vue";
-
+ 
 /*
  * Experiment 3: Director task
  */
 import trialBlocks from "./Experiments/main/trials";
+import InstructionsSpeaker from "./Experiments/main/InstructionsSpeaker.vue";
+import InstructionsListener from "./Experiments/main/InstructionsListener.vue";
 import InstructionsWithBack from "./Experiments/main/InstructionsWithBack.vue";
+import PracticeSpeaker from "./Experiments/main/PracticeSpeaker.vue";
+import PracticeListener from "./Experiments/main/PracticeListener.vue";
 import PracticeBlock from "./Experiments/main/PracticeBlock.vue";
 import practiceTrials from "./Experiments/main/PracticeTrials";
 import GridTrial from "./Experiments/main/GridTrial.vue";
@@ -132,6 +144,10 @@ export default {
     /*
      * Director task
      */
+    InstructionsSpeaker,
+    PracticeSpeaker,
+    InstructionsListener,
+    PracticeListener,
     InstructionsWithBack,
     GridTrial,
     PracticeBlock,
