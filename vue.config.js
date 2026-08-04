@@ -19,5 +19,5 @@ module.exports = {
     lintStyleOnBuild: false,
     stylelint: {}
   },
-  publicPath: '/study-72/'
+  publicPath: '/study-72-paid/'
 };
