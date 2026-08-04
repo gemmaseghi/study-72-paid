@@ -116,7 +116,7 @@ export default {
   },
 
   methods: {
-
+    
     previousPage() {
       this.page--;
     },
