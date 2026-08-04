@@ -6,14 +6,16 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "lint:style": "vue-cli-service lint:style"
+    "lint:style": "vue-cli-service lint:style",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "magpie-base": "^3.6.9"
   },
   "devDependencies": {
     "@samhammer/vue-cli-plugin-stylelint": "5.x",
-    "@vue/cli-plugin-eslint": "5.x"
+    "@vue/cli-plugin-eslint": "5.x",
+    "patch-package": "^8.0.1"
   },
   "engines": {
     "node": "14.x || 16.x || 18.x || 20.x",

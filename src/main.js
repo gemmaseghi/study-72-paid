@@ -6,6 +6,13 @@ import magpieConfig from './magpie.config.js';
 
 Vue.config.productionTip = false;
 
+// Read the participant's Sona survey code
+const urlParams = new URLSearchParams(window.location.search);
+
+Vue.prototype.$surveyCode =
+  urlParams.get('survey_code') ||
+  urlParams.get('SURVEY_CODE');
+
 // Load Konva components
 Vue.use(VueKonva, { prefix: 'Canvas' });
 

@@ -1,0 +1,185 @@
+diff --git a/node_modules/magpie-base/src/components/Experiment.vue b/node_modules/magpie-base/src/components/Experiment.vue
+index 08686a3..f5de476 100644
+--- a/node_modules/magpie-base/src/components/Experiment.vue
++++ b/node_modules/magpie-base/src/components/Experiment.vue
+@@ -214,21 +214,36 @@ export default {
+ 
+     this.$magpie.addExpData(this.recordData);
+ 
+-    // Ask the user before closing the page
+-    window.addEventListener('beforeunload', (e) => {
++    this.beforeUnloadHandler = (e) => {
+       e.preventDefault();
+-    });
+-  },
+-  mounted() {
+-    this.$el.addEventListener('mousemove', (e) =>
+-      this.$magpie.mousetracking.onMouseMove(e)
++      e.returnValue = ''; 
++    };
++
++    window.addEventListener(
++      'beforeunload',
++      this.beforeUnloadHandler
+     );
+   },
++
++  beforeDestroy() {
++    this.disableBeforeUnload();
++  },
++
+   methods: {
+     scrollToTop() {
+-      // Scroll to top of experiment element
+       const expPos = this.$el.getBoundingClientRect();
+       window.scrollTo(0, window.scrollY + expPos.top);
++    },
++
++    disableBeforeUnload() {
++      if (this.beforeUnloadHandler) {
++        window.removeEventListener(
++          'beforeunload',
++          this.beforeUnloadHandler
++        );
++
++        this.beforeUnloadHandler = null;
++      }
+     }
+   },
+ 
+diff --git a/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue b/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue
+index 23425df..082699a 100644
+--- a/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue
++++ b/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue
+@@ -7,26 +7,29 @@ You can provide the submission URL to the Experiment component.
+   <Screen v-if="!$magpie.debug" title="Submitting">
+     <Slide>
+       <p>{{ $t('screens.SubmitResultsScreen.waiting') }}</p>
+-      <Wait :time="0" @done="submit(() => $magpie.nextSlide())" />
++      <Wait :time="0" @done="submit()" />
+     </Slide>
++
+     <Slide>
+       <p v-if="!error">
+         {{ $t('screens.SubmitResultsScreen.done') }}
+-        <Wait :time="3000" @done="redirectToCompletionUrl" />
+       </p>
++
+       <div v-else>
+         <p>{{ $t('screens.SubmitResultsScreen.error') }}</p>
++
+         <p>
+           {{ $t('screens.SubmitResultsScreen.contact') }}
+-          <a :href="'mailto:' + $magpie.contactEmail">{{
+-            $magpie.contactEmail
+-          }}</a
+-          >.
++          <a :href="'mailto:' + $magpie.contactEmail">
++            {{ $magpie.contactEmail }}
++          </a>.
+         </p>
++
+         <p v-text="error" />
+       </div>
+     </Slide>
+   </Screen>
++
+   <DebugResultsScreen v-else />
+ </template>
+ 
+@@ -35,28 +38,87 @@ import Screen from '../Screen';
+ import Wait from '../helpers/Wait';
+ import DebugResultsScreen from './DebugResultsScreen';
+ import Slide from '../Slide';
++
+ export default {
+   name: 'SubmitResultsScreen',
+-  components: { Slide, DebugResultsScreen, Wait, Screen },
+-  props: {},
++
++  components: {
++    Screen,
++    Slide,
++    Wait,
++    DebugResultsScreen
++  },
++
+   data() {
+     return {
+       error: null
+     };
+   },
++
+   methods: {
+-    async submit(cb) {
++    async submit() {
+       try {
++        // Wait until the data have been successfully submitted.
+         await this.$magpie.submit();
+-        cb();
++
++        // Show the successful-submission slide.
++        this.$magpie.nextSlide();
++
++        // Redirect after displaying the completion message for three seconds.
++        window.setTimeout(() => {
++          this.redirectToCompletionUrl();
++        }, 3000);
+       } catch (err) {
+-        this.error = err.message;
+-        cb();
++        this.error =
++          err instanceof Error
++            ? err.message
++            : String(err);
++
++        // Show the error on the second slide without redirecting.
++        this.$magpie.nextSlide();
++      }
++    },
++
++    disableUnloadWarning() {
++      const experiment = this.$magpie.experiment;
++
++      if (
++        experiment &&
++        typeof experiment.disableBeforeUnload === 'function'
++      ) {
++        experiment.disableBeforeUnload();
+       }
+     },
++
+     redirectToCompletionUrl() {
+-      if (this.$magpie.completionUrl && this.$magpie.mode === 'prolific') {
+-        window.location = this.$magpie.completionUrl;
++      // Prolific
++      if (
++        this.$magpie.mode === 'prolific' &&
++        this.$magpie.completionUrl
++      ) {
++        this.disableUnloadWarning();
++        window.location.assign(this.$magpie.completionUrl);
++        return;
++      }
++
++      // Sona
++      if (this.$surveyCode) {
++        const url = new URL(
++          'https://uni-tuebingen.sona-systems.com/webstudy_credit.aspx'
++        );
++
++        url.searchParams.set('experiment_id', '805');
++        url.searchParams.set(
++          'credit_token',
++          '77d68adf3c724c50a4ac5e59ed528792'
++        );
++        url.searchParams.set(
++          'survey_code',
++          this.$surveyCode
++        );
++
++        this.disableUnloadWarning();
++        window.location.assign(url.toString());
+       }
+     }
+   }
