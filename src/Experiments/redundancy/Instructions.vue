@@ -91,7 +91,7 @@ export default {
             </p>
 
             <p>
-              Du <strong>musst nicht beschreiben, wo im Bildausschnitt sich der Aufkleber befindet</strong>. Gib einfach eine Beschreibung an, die das richtige Objekt aus den vier Objekten im Gitter deutlich macht. Du kannst den Namen des Objekts verwenden.
+              Du <strong>musst nicht beschreiben, wo im Bildausschnitt sich der Aufkleber befindet</strong>. Gib einfach eine Beschreibung an, die das richtige Objekt aus den vier Objekten im Gitter deutlich macht. <strong>Du kannst den Namen des Objekts verwenden</strong>.
             </p>
 
             <p>
