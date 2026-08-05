@@ -38,29 +38,23 @@ export default {
         {
           title: "Ende des letzten Experiments",
           text: `
-          <p>
-            Herzlichen Glückwunsch, du hast nun alle Experimente abgeschlossen!
-          </p>
+            <p>
+              Herzlichen Glückwunsch! Du hast das Experiment erfolgreich
+              abgeschlossen.
+            </p>
 
-          <p>
-            Klicke auf „Weiter“, um deine Ergebnisse einzureichen. Zunächst werden
-            deine Daten an den Server übertragen. Sobald die Übertragung erfolgreich
-            abgeschlossen ist, wirst du zu einer Abschlussseite weitergeleitet.
-          </p>
+            <p>
+              Klicke auf „Weiter“, um deine Ergebnisse einzureichen. Deine Daten
+              werden zunächst an den Server übertragen. Nach erfolgreicher
+              Übertragung wirst du zur Abschlussseite weitergeleitet.
+            </p>
 
-          <p>
-            Auf dieser Seite werden dir ein persönlicher Abschlusscode und die
-            E-Mail-Adresse angezeigt, an die du dich wenden musst, um deine
-            Aufwandsentschädigung zu erhalten. Bitte gib deinen Abschlusscode in
-            der E-Mail an.
-          </p>
-
-          <p>
-            Anschließend erhältst du per E-Mail eine Teilnahmebescheinigung. Bitte
-            fülle diese aus, unterschreibe sie und sende sie zurück. Sobald die
-            unterschriebene Teilnahmebescheinigung eingegangen ist, erhältst du
-            deinen Gutschein.
-          </p>
+            <p>
+              Dort wird dir ein persönlicher Abschlusscode angezeigt. Bitte
+              antworte auf die E-Mail, über die du den Studienlink erhalten hast,
+              und sende uns diesen Abschlusscode. Wir prüfen anschließend deine
+              Teilnahme und senden dir die Teilnahmebescheinigung zu.
+            </p>
           `
         },
       ]

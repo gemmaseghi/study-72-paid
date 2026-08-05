@@ -48,10 +48,10 @@ index 08686a3..f5de476 100644
    },
  
 diff --git a/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue b/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue
-index 23425df..791f61b 100644
+index 23425df..19aabf7 100644
 --- a/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue
 +++ b/node_modules/magpie-base/src/components/screens/SubmitResultsScreen.vue
-@@ -4,29 +4,67 @@ You can provide the submission URL to the Experiment component.
+@@ -4,29 +4,66 @@ You can provide the submission URL to the Experiment component.
  </docs>
  
  <template>
@@ -89,13 +89,23 @@ index 23425df..791f61b 100644
 +        </p>
 +
 +        <p>
-+          Um deine Aufwandsentschädigung zu erhalten, schreibe bitte eine
-+          E-Mail an
-+          <a :href="emailLink">
-+            {{ researcherEmail }}
-+          </a>
-+          und gib deinen Abschlusscode in der Nachricht an.
++          Bitte antworte auf die E-Mail, über die du den Studienlink erhalten
++          hast, und gib diesen Abschlusscode in deiner Antwort an.
 +        </p>
++
++        <p>
++          Falls du die E-Mail nicht mehr findest, kannst du dich unter
++          <strong>gemma.seghi@uni-tuebingen.de</strong> an uns wenden.
++        </p>
++
++        <p>
++          Nach der Überprüfung deiner Teilnahme senden wir dir die
++          Teilnahmebescheinigung zu.
++        </p>
++      </div>
++
++      <div v-else class="submission-content error-content">
++        <h2>Fehler bei der Datenübertragung</h2>
 +
          <p>
 -          {{ $t('screens.SubmitResultsScreen.contact') }}
@@ -103,20 +113,9 @@ index 23425df..791f61b 100644
 -            $magpie.contactEmail
 -          }}</a
 -          >.
-+          Anschließend erhältst du per E-Mail eine Teilnahmebescheinigung.
-+          Bitte fülle diese aus, unterschreibe sie und sende sie per E-Mail
-+          zurück. Sobald die unterschriebene Teilnahmebescheinigung bei uns
-+          eingegangen ist, wird dir dein Gutschein zugesendet.
-         </p>
-+      </div>
-+
-+      <div v-else class="submission-content error-content">
-+        <h2>Fehler bei der Datenübertragung</h2>
-+
-+        <p>
 +          Deine Antworten konnten leider nicht erfolgreich übermittelt
 +          werden.
-+        </p>
+         </p>
 +
 +        <p>
 +          Bitte wende dich an
@@ -133,7 +132,7 @@ index 23425df..791f61b 100644
    <DebugResultsScreen v-else />
  </template>
  
-@@ -35,30 +73,175 @@ import Screen from '../Screen';
+@@ -35,30 +72,152 @@ import Screen from '../Screen';
  import Wait from '../helpers/Wait';
  import DebugResultsScreen from './DebugResultsScreen';
  import Slide from '../Slide';
@@ -154,32 +153,9 @@ index 23425df..791f61b 100644
      return {
 -      error: null
 +      error: null,
-+      completionCode: '',
-+      researcherEmail: 'gemma.seghi@uni-tuebingen.de'
++      completionCode: ''
      };
    },
-+
-+  computed: {
-+    emailLink() {
-+      const subject = encodeURIComponent(
-+        'Abschluss der Studie und Aufwandsentschädigung'
-+      );
-+
-+      const body = encodeURIComponent(
-+        `Hallo,\n\n` +
-+          `ich habe das Experiment abgeschlossen.\n\n` +
-+          `Mein Abschlusscode lautet: ${this.completionCode}\n\n` +
-+          `Bitte senden Sie mir die Teilnahmebescheinigung zu.\n\n` +
-+          `Viele Grüße`
-+      );
-+
-+      return (
-+        `mailto:${this.researcherEmail}` +
-+        `?subject=${subject}` +
-+        `&body=${body}`
-+      );
-+    }
-+  },
 +
 +  created() {
 +    this.completionCode = this.getOrCreateCompletionCode();
@@ -273,7 +249,7 @@ index 23425df..791f61b 100644
 +.submission-content {
 +  box-sizing: border-box;
 +  width: 100%;
-+  max-width: 650px;
++  max-width: 700px;
 +  margin: 40px auto;
 +  padding: 0 30px;
 +  font-size: 18px;
